@@ -81,8 +81,20 @@ def clear_tmp(directory):
             os.remove(os.path.join(directory, i))
 
 
+def check_update():
+    # check if there's a higher version of the app
+    commit_count = 6
+    repo_commit_count = len(requests.get("https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
+    if commit_count != repo_commit_count:
+        print("\nYou are using an outdated version of animeX. Please update from https://github.com/LordGhostX/animeX-v2")
+    else:
+        print("\nYou're ready to go :)")
+
+
 if __name__ == "__main__":
     print("anime X v2.0\nAll anime are gotten from www.animeout.xyz/")
+    check_update()
+
     if len(sys.argv) == 2:
         anime_name = sys.argv[1]
     else:
@@ -102,3 +114,5 @@ if __name__ == "__main__":
     for i in episodes:
         download_url = get_download_url(i)
         download_episode(anime["name"], download_url)
+
+    print("Finished downloading all episodes of", anime["name"])

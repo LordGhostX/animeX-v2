@@ -63,7 +63,7 @@ def download_episode(anime_name, download_url):
     new_anime_name = ""
     for char in anime_name:
         if char.isalnum() or char == " ":
-            new_anime_name += char
+            new_anime_name += char # ensures no forbidden characters like * . " / \ [ ] : ; | ,
     filename = os.path.basename(download_url)
     download_path = os.path.join(new_anime_name, filename)
     if not os.path.exists(download_path):
@@ -78,7 +78,7 @@ def make_directory(anime_name):
     if not os.path.exists(anime_name):
         for char in anime_name:
             if char.isalnum() or char == " ":
-                new_anime_name += char
+                new_anime_name += char  # ensures no forbidden characters like * . " / \ [ ] : ; | ,
         os.mkdir(new_anime_name)
 
 

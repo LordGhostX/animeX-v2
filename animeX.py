@@ -60,18 +60,26 @@ def get_download_url(anime_url):
 def download_episode(anime_name, download_url):
     # download anime and store in the folder the same name
     # don't download files that exist and clear tmp files after download
+    new_anime_name = ""
+    for char in anime_name:
+        if char.isalnum() or char == " ":
+            new_anime_name += char
     filename = os.path.basename(download_url)
-    download_path = os.path.join(anime_name, filename)
+    download_path = os.path.join(new_anime_name, filename)
     if not os.path.exists(download_path):
         print("\nDownloading", filename)
-        #wget.download(download_url, download_path)
-        clear_tmp(anime_name)
+        # wget.download(download_url, download_path)
+        clear_tmp(new_anime_name)
 
 
 def make_directory(anime_name):
     # create folder to store anime
+    new_anime_name = ""
     if not os.path.exists(anime_name):
-        os.mkdir(anime_name)
+        for char in anime_name:
+            if char.isalnum() or char == " ":
+                new_anime_name += char
+        os.mkdir(new_anime_name)
 
 
 def clear_tmp(directory):

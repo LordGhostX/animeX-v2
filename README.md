@@ -7,12 +7,8 @@ Version 2 of [animeX](https://github.com/LordGhostX/animeX) which is a CLI tool 
 
 All anime are gotten from [animeout.xyz](https://animeout.xyz)
 
-![app screenshot](notebooks/screenshot.png)
-
 ## 📸 ScreenShots
-|------|-------|
 |<img src="ss/1.png" width="250">|<img src="ss/1a.png" width="250">|
-|------|-------|
 
 ## Notes
 * Advisable to check the source website for the anime because it'll download all the episodes on the site (720p and 1080p if it's available on the site)
@@ -58,6 +54,8 @@ $ pip install requirements.txt
 ```sh
 $ python animeX.py
 ```
+
+![app screenshot](notebooks/screenshot.png)
 
 ## :heart: Found this project useful?
 #### If you found this project useful or you like what you see, then please consider giving it a :star: on Github and sharing it with your friends via social media.

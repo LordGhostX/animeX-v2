@@ -8,7 +8,7 @@ Version 2 of [animeX](https://github.com/LordGhostX/animeX) which is a CLI tool 
 All anime are gotten from [animeout.xyz](https://animeout.xyz)
 
 ## 📸 ScreenShots
-|<img src="ss/1.png" width="250">|<img src="ss/1a.png" width="250">|
+|<img src="ss/1.png">|<img src="ss/2.png">|
 
 ## Notes
 * Advisable to check the source website for the anime because it'll download all the episodes on the site (720p and 1080p if it's available on the site)

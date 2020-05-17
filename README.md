@@ -7,8 +7,9 @@ Version 2 of [animeX](https://github.com/LordGhostX/animeX) which is a CLI tool 
 
 All anime are gotten from [animeout.xyz](https://animeout.xyz)
 
-## 📸 ScreenShots
-|<img src="ss/1.png">|<img src="ss/2.png">|
+## 📸 Screenshots
+<img src="ss/1.png">
+<img src="ss/2.png">
 
 ## Notes
 * Advisable to check the source website for the anime because it'll download all the episodes on the site (720p and 1080p if it's available on the site)
@@ -22,7 +23,7 @@ All anime are gotten from [animeout.xyz](https://animeout.xyz)
 ## Download
 Download the windows release version here
 <br>
-<a href="./dist/animeX.exe">Windows</a>
+<a href="./dist/animeX.exe">Windows EXE</a>
 <br>
 
 ## 💻 Requirements
@@ -46,7 +47,7 @@ $ cd animeX-v2
 #### 3. Get requirements
 
 ```sh
-$ pip install requirements.txt
+$ pip install -r requirements.txt
 ```
 
 #### 4. Running the application
@@ -54,17 +55,21 @@ $ pip install requirements.txt
 ```sh
 $ python animeX.py
 ```
+```sh
+$ python animeX.py "black bullet"
+```
 
-![app screenshot](notebooks/screenshot.png)
+![app screenshot](ss/home.png)
 
 ## :heart: Found this project useful?
-#### If you found this project useful or you like what you see, then please consider giving it a :star: on Github and sharing it with your friends via social media.
+If you found this project useful or you like what you see, then please consider giving it a :star: on Github and sharing it with your friends via social media.
 
 ## 🐛 Bugs/Request
-#### Encounter any problem(s)? feel free to open an issue. If you feel you could make something better, please raise a ticket on Github and I'll look into it. Pull request are also welcome.
+Encounter any problem(s)? feel free to open an issue. If you feel you could make something better, please raise a ticket on Github and I'll look into it. Pull request are also welcome.
 
 ## ⭐️ License
-#### <a href="https://github.com/LordGhostX/animeX-v2/blob/master/license.txt">MIT LICENSE</a>
+<a href="https://github.com/LordGhostX/animeX-v2/blob/master/license.txt">MIT LICENSE</a>
 
 ## 🤓 Developer(s)
-#### **LordGhostX**
+* **LordGhostX**
+* **Mastersam07**

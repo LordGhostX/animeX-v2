@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 def banner():
     # App banner
     banner_ascii = """
- █████╗ ███╗   ██╗██╗███╗   ███╗███████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗ 
+ █████╗ ███╗   ██╗██╗███╗   ███╗███████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗
 ██╔══██╗████╗  ██║██║████╗ ████║██╔════╝╚██╗██╔╝    ██║   ██║╚════██╗   ██╔═████╗
 ███████║██╔██╗ ██║██║██╔████╔██║█████╗   ╚███╔╝     ██║   ██║ █████╔╝   ██║██╔██║
 ██╔══██║██║╚██╗██║██║██║╚██╔╝██║██╔══╝   ██╔██╗     ╚██╗ ██╔╝██╔═══╝    ████╔╝██║
@@ -95,7 +95,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 6
+    commit_count = 20
     repo_commit_count = len(requests.get("https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
         print(

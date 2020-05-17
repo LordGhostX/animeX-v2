@@ -5,6 +5,18 @@ import wget
 from bs4 import BeautifulSoup
 
 
+def banner():
+    # App banner
+    banner_ascii = """
+ █████╗ ███╗   ██╗██╗███╗   ███╗███████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗ 
+██╔══██╗████╗  ██║██║████╗ ████║██╔════╝╚██╗██╔╝    ██║   ██║╚════██╗   ██╔═████╗
+███████║██╔██╗ ██║██║██╔████╔██║█████╗   ╚███╔╝     ██║   ██║ █████╔╝   ██║██╔██║
+██╔══██║██║╚██╗██║██║██║╚██╔╝██║██╔══╝   ██╔██╗     ╚██╗ ██╔╝██╔═══╝    ████╔╝██║
+██║  ██║██║ ╚████║██║██║ ╚═╝ ██║███████╗██╔╝ ██╗     ╚████╔╝ ███████╗██╗╚██████╔╝"""
+
+    return banner_ascii
+
+
 def get_search_result(search_item):
     # search for a given anime
     search_url = "https://www.animeout.xyz/"
@@ -86,13 +98,15 @@ def check_update():
     commit_count = 6
     repo_commit_count = len(requests.get("https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
-        print("\nYou are using an outdated version of animeX. Please update from https://github.com/LordGhostX/animeX-v2")
+        print(
+            "\nYou are using an outdated version of animeX. Please update from https://github.com/LordGhostX/animeX-v2")
     else:
         print("\nYou're ready to go :)")
 
 
 if __name__ == "__main__":
-    print("anime X v2.0\nAll anime are gotten from www.animeout.xyz/")
+    print(banner())
+    print("\nAll anime are gotten from www.animeout.xyz/")
     check_update()
 
     if len(sys.argv) == 2:

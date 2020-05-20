@@ -8,11 +8,15 @@ from bs4 import BeautifulSoup
 def banner():
     # App banner
     banner_ascii = """
- █████╗ ███╗   ██╗██╗███╗   ███╗███████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗ 
-██╔══██╗████╗  ██║██║████╗ ████║██╔════╝╚██╗██╔╝    ██║   ██║╚════██╗   ██╔═████╗
-███████║██╔██╗ ██║██║██╔████╔██║█████╗   ╚███╔╝     ██║   ██║ █████╔╝   ██║██╔██║
-██╔══██║██║╚██╗██║██║██║╚██╔╝██║██╔══╝   ██╔██╗     ╚██╗ ██╔╝██╔═══╝    ████╔╝██║
-██║  ██║██║ ╚████║██║██║ ╚═╝ ██║███████╗██╔╝ ██╗     ╚████╔╝ ███████╗██╗╚██████╔╝"""
+  /$$$$$$            /$$                         /$$   /$$
+ /$$__  $$          |__/                        | $$  / $$
+| $$  \ $$ /$$$$$$$  /$$ /$$$$$$/$$$$   /$$$$$$ |  $$/ $$/
+| $$$$$$$$| $$__  $$| $$| $$_  $$_  $$ /$$__  $$ \  $$$$/
+| $$__  $$| $$  \ $$| $$| $$ \ $$ \ $$| $$$$$$$$  >$$  $$
+| $$  | $$| $$  | $$| $$| $$ | $$ | $$| $$_____/ /$$/\  $$
+| $$  | $$| $$  | $$| $$| $$ | $$ | $$|  $$$$$$$| $$  \ $$
+|__/  |__/|__/  |__/|__/|__/ |__/ |__/ \_______/|__/  |__/
+"""
 
     return banner_ascii
 
@@ -39,10 +43,9 @@ def get_anime_episodes(anime_url):
     # get the episodes in the anime by parsing all links that are videos
     r = requests.get(anime_url)
     anime_result = BeautifulSoup(r.text, "html.parser")
-    anime_section = anime_result.find("div", {"class": "article-content"})
 
     episodes = []
-    for i in anime_section.findAll("a"):
+    for i in anime_result.findAll("a"):
         try:
             if i["href"][-3:] in ["mkv", "mp4]"]:
                 episodes.append(i["href"])
@@ -95,11 +98,11 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 6
-    repo_commit_count = len(requests.get("https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
+    commit_count = 22
+    repo_commit_count = len(requests.get(
+        "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
-        print(
-            "\nYou are using an outdated version of animeX. Please update from https://github.com/LordGhostX/animeX-v2")
+        print("\nYou are using an outdated version of animeX. Please update from https://github.com/LordGhostX/animeX-v2")
     else:
         print("\nYou're ready to go :)")
 
@@ -125,8 +128,9 @@ if __name__ == "__main__":
     episodes = get_anime_episodes(anime["url"])
 
     make_directory(anime["name"])
+    print("\nPress CTRL + C to cancel your download at any time")
     for i in episodes:
         download_url = get_download_url(i)
         download_episode(anime["name"], download_url)
 
-    print("Finished downloading all episodes of", anime["name"])
+    print("\nFinished downloading all episodes of", anime["name"])

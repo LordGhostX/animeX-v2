@@ -8,8 +8,8 @@ Version 2 of [animeX](https://github.com/LordGhostX/animeX) which is a CLI tool 
 All anime are gotten from [animeout.xyz](https://animeout.xyz)
 
 ## 📸 Screenshots
-<img src="ss/1.png">
-<img src="ss/2.png">
+<img src="ss/1a.png" alt="Home page">
+<img src="ss/2a.png" alt="Usage page">
 
 ## Notes
 * Advisable to check the source website for the anime because it'll download all the episodes on the site (720p and 1080p if it's available on the site)
@@ -58,6 +58,13 @@ $ python animeX.py
 ```sh
 $ python animeX.py "black bullet"
 ```
+
+#### 5. Generating windows executable
+> Ensure to specify the project and icon path in the spec file(animeX.spec)
+```sh
+$ pyinstaller.exe animeX.spec
+```
+The executable is created in the directory project_path\dist\animeX.exe
 
 ![app screenshot](ss/home.png)
 

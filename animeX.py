@@ -98,11 +98,12 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 22
+    commit_count = 24
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
-        print("\nYou are using an outdated version of animeX. Please update from https://github.com/LordGhostX/animeX-v2")
+        print("\nYou are using an outdated version of animeX. Please update from "
+              "https://github.com/LordGhostX/animeX-v2")
     else:
         print("\nYou're ready to go :)")
 

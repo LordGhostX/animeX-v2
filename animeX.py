@@ -5,6 +5,22 @@ import wget
 from bs4 import BeautifulSoup
 
 
+def banner():
+    # App banner
+    banner_ascii = """
+  /$$$$$$            /$$                         /$$   /$$
+ /$$__  $$          |__/                        | $$  / $$
+| $$  \ $$ /$$$$$$$  /$$ /$$$$$$/$$$$   /$$$$$$ |  $$/ $$/
+| $$$$$$$$| $$__  $$| $$| $$_  $$_  $$ /$$__  $$ \  $$$$/
+| $$__  $$| $$  \ $$| $$| $$ \ $$ \ $$| $$$$$$$$  >$$  $$
+| $$  | $$| $$  | $$| $$| $$ | $$ | $$| $$_____/ /$$/\  $$
+| $$  | $$| $$  | $$| $$| $$ | $$ | $$|  $$$$$$$| $$  \ $$
+|__/  |__/|__/  |__/|__/|__/ |__/ |__/ \_______/|__/  |__/
+"""
+
+    return banner_ascii
+
+
 def get_search_result(search_item):
     # search for a given anime
     search_url = "https://www.animeout.xyz/"
@@ -27,10 +43,9 @@ def get_anime_episodes(anime_url):
     # get the episodes in the anime by parsing all links that are videos
     r = requests.get(anime_url)
     anime_result = BeautifulSoup(r.text, "html.parser")
-    anime_section = anime_result.find("div", {"class": "article-content"})
 
     episodes = []
-    for i in anime_section.findAll("a"):
+    for i in anime_result.findAll("a"):
         try:
             if i["href"][-3:] in ["mkv", "mp4]"]:
                 episodes.append(i["href"])
@@ -60,26 +75,18 @@ def get_download_url(anime_url):
 def download_episode(anime_name, download_url):
     # download anime and store in the folder the same name
     # don't download files that exist and clear tmp files after download
-    new_anime_name = ""
-    for char in anime_name:
-        if char.isalnum() or char == " ":
-            new_anime_name += char # ensures no forbidden characters like * . " / \ [ ] : ; | ,
     filename = os.path.basename(download_url)
-    download_path = os.path.join(new_anime_name, filename)
+    download_path = os.path.join(anime_name, filename)
     if not os.path.exists(download_path):
         print("\nDownloading", filename)
-        # wget.download(download_url, download_path)
-        clear_tmp(new_anime_name)
+        wget.download(download_url, download_path)
+        clear_tmp(anime_name)
 
 
 def make_directory(anime_name):
     # create folder to store anime
-    new_anime_name = ""
     if not os.path.exists(anime_name):
-        for char in anime_name:
-            if char.isalnum() or char == " ":
-                new_anime_name += char  # ensures no forbidden characters like * . " / \ [ ] : ; | ,
-        os.mkdir(new_anime_name)
+        os.mkdir(anime_name)
 
 
 def clear_tmp(directory):
@@ -89,8 +96,23 @@ def clear_tmp(directory):
             os.remove(os.path.join(directory, i))
 
 
+def check_update():
+    # check if there's a higher version of the app
+    commit_count = 29
+    repo_commit_count = len(requests.get(
+        "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
+    if commit_count != repo_commit_count:
+        print("\nYou are using an outdated version of animeX. Please update from "
+              "https://github.com/LordGhostX/animeX-v2")
+    else:
+        print("\nYou're ready to go :)")
+
+
 if __name__ == "__main__":
-    print("Anime X v2.0\nAll anime are gotten from www.animeout.xyz/")
+    print(banner())
+    print("\nAll anime are gotten from www.animeout.xyz/")
+    check_update()
+
     if len(sys.argv) == 2:
         anime_name = sys.argv[1]
     else:
@@ -103,9 +125,13 @@ if __name__ == "__main__":
     choice = int(input("\nWhich one? Enter the number of your choice::: "))
 
     anime = search_result[choice - 1]
+    anime["name"] = "".join([i if i.isalnum() else "-" for i in anime["name"]])
     episodes = get_anime_episodes(anime["url"])
 
     make_directory(anime["name"])
+    print("\nPress CTRL + C to cancel your download at any time")
     for i in episodes:
         download_url = get_download_url(i)
         download_episode(anime["name"], download_url)
+
+    print("\nFinished downloading all episodes of", anime["name"])

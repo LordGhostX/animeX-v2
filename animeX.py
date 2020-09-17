@@ -98,7 +98,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 10
+    commit_count = 11
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
@@ -131,7 +131,10 @@ if __name__ == "__main__":
     make_directory(anime["name"])
     print("\nPress CTRL + C to cancel your download at any time")
     for i in episodes:
-        download_url = get_download_url(i)
-        download_episode(anime["name"], download_url)
+        try:
+            download_url = get_download_url(i)
+            download_episode(anime["name"], download_url)
+        except:
+            pass
 
     print("\nFinished downloading all episodes of", anime["name"])

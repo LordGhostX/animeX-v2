@@ -132,24 +132,54 @@ if __name__ == "__main__":
 
     getall = input("\nDo you want to get all episodes?:: (Y/N)  ")
     if getall in ['n', 'No', 'N', 'NO']:
-        episodes = get_anime_episodes(anime["url"])
-        for i, j in enumerate(episodes, 1):
-            try:
-                print(i, j.split('-')[2])
-            except IndexError:
-                print(i, j.split('-')[1])
-        episode_no = int(input("\nChoose episode number:: "))
-        make_directory(anime["name"])
-        print("\nPress CTRL + C to cancel your download at any time")
-        download_url = get_download_url(episodes[episode_no-1])
-        start = time.perf_counter() 
-        download_episode(anime["name"], download_url)
-        end = time.perf_counter()
-        print(f'completed download in {end-start} minutes(s)')
+        getsingle = input("\nDo you want to download more than one episode:: (Y/N)")
+        if getsingle in ['n', 'No', 'N', 'NO']:
+            getlatest = input("Get latest episode: (Y/N) ")
+            if getlatest in ['n', 'No', 'N', 'NO']:
+                for i, j in enumerate(episodes, 1):
+                    try:
+                        print(i, j.split('-')[2])
+                    except IndexError:
+                        print(i, j.split('-')[1])
+                episode_no = int(input("\nChoose episode number:: "))
+                make_directory(anime["name"])
+                print("\nPress CTRL + C to cancel your download at any time")
+                download_url = get_download_url(episodes[episode_no-1])
+                start = time.perf_counter() 
+                download_episode(anime["name"], download_url)
+                end = time.perf_counter()
+                print(f'completed download in {end-start} minutes(s)')
+            elif getlatest in ['Yes', 'YES', 'y', 'Y']:
+                latest = episodes[-1]
+                download_url = get_download_url(latest)
+                download_episode(anime["name"], download_url)
+            else:
+                print("Invalid entry!: Bye!")
+        elif getsingle in ['Yes', 'YES', 'y', 'Y']:
+            for i, j in enumerate(episodes, 1):
+                try:
+                    print(i, j.split('-')[2])
+                except IndexError:
+                    print(i, j.split('-')[1])
+            values = input("\nEnter a list of episode numbers separated by commas e.g: 20,21,22::  "))
+            values = values.split(',')
+            if len(values) < 2:
+                print("\n Invalid data entry!: please make sure episodes are separated by commas ',' ")
+                print(("\n This is on you! "))      ## Pun
+                time.sleep(0.5)                     ## for effect
+                pass
+                exit()                              ## The joke
+            for i in values:
+                download_url = get_download_url(episodes[i-1])
+                download_episode(anime["name"], download_url)
+        else:
+            print("Invalid entry!: Bye!")
     elif getall in ['Yes', 'YES', 'y', 'Y']:
         make_directory(anime["name"])
         print("\nPress CTRL + C to cancel your download at any time")
         start = time.perf_counter()
+    else:
+        print("Invalid entry!: Bye!")
 
         """episodes = episodes[5:7]
         with concurrent.futures.ThreadPoolExecutor() as executor:

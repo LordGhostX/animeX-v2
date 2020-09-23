@@ -103,7 +103,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 19
+    commit_count = 20
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
@@ -153,14 +153,20 @@ if __name__ == "__main__":
         for i, j in enumerate(episodes, 1):
             print(i, name_parser(j))
         episode_no = input(
-            "\nYou can specify a range of anime to download in the format ep-start:ep-end e.g 10:20\nChoose episode number::: ")
+            "\nYou can specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
         if len(episode_no.split(":")) == 1:
-            download_url = get_download_url(
-                episodes[int(episode_no.split(":")[0]) - 1])
-            start = time.perf_counter()
-            download_episode(anime["name"], download_url)
-            end = time.perf_counter()
-            print(f'completed download in {end-start} minutes(s)')
+            if len(episode_no.split(",")) == 1:
+                download_url = get_download_url(
+                    episodes[int(episode_no.split(":")[0]) - 1])
+                start = time.perf_counter()
+                download_episode(anime["name"], download_url)
+                end = time.perf_counter()
+                print(f'\ncompleted download in {end-start} seconds')
+            else:
+                episode_list = [int(i) - 1 for i in episode_no.split(",")]
+                episodes = [j for i, j in enumerate(
+                    episodes) if i in episode_list]
+                splice_download = True
         else:
             start_ep, end_ep = [int(i) for i in episode_no.split(":")[:2]]
             episodes = episodes[start_ep - 1:end_ep]
@@ -171,5 +177,5 @@ if __name__ == "__main__":
             download_url = get_download_url(i)
             download_episode(anime["name"], download_url)
         end = time.perf_counter()
-        print(f'completed download in {end-start} minutes(s)')
+        print(f'\ncompleted download in {end-start} seconds')
     print("\nFinished downloading all episodes of", anime["name"])

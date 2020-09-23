@@ -148,23 +148,15 @@ if __name__ == "__main__":
         print("\nPress CTRL + C to cancel your download at any time")
         start = time.perf_counter()
 
-        episodes = episodes[5:7]
+        """episodes = episodes[5:7]
         with concurrent.futures.ThreadPoolExecutor() as executor:
             for i in episodes:
                 download_url = get_download_url(i)
-                executor.submit(download_episode,anime["name"], download_url)
+                executor.submit(download_episode,anime["name"], download_url)"""
 
-        """for i in episodes:
+        for i in episodes:
             download_url = get_download_url(i)
-            download_episode(anime["name"], download_url)"""
-
-        """count = 0
-        while len(os.listdir(anime["name"])) < 2:
-            download_url = get_download_url(episodes[count])
             download_episode(anime["name"], download_url)
-            count += 1
-            if len(os.listdir(anime["name"])) >= 2:
-                break"""
 
         end = time.perf_counter()
         print(f'completed download in {end-start} minutes(s)')

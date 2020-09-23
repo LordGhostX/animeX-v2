@@ -134,7 +134,10 @@ if __name__ == "__main__":
     if getall in ['n', 'No', 'N', 'NO']:
         episodes = get_anime_episodes(anime["url"])
         for i, j in enumerate(episodes, 1):
-            print(i, j.split('-')[2])
+            try:
+                print(i, j.split('-')[2])
+            except IndexError:
+                print(i, j.split('-')[1])
         episode_no = int(input("\nChoose episode number:: "))
         make_directory(anime["name"])
         print("\nPress CTRL + C to cancel your download at any time")

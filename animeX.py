@@ -103,7 +103,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 17
+    commit_count = 18
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
@@ -144,20 +144,28 @@ if __name__ == "__main__":
 
     episodes = get_anime_episodes(anime["url"])
     getall = input(
-        "\nanimeX found {} episodes for the requested anime\nDo you want to get all episodes?::: (Y/N)  ".format(len(episodes)))
+        "\nanimeX found {} episodes for the requested anime\nDo you want to get all episodes?::: (Y/N)  ".format(len(episodes))).lower()
     make_directory(anime["name"])
     print("\nPress CTRL + C to cancel your download at any time")
 
-    if getall in ['n', 'No', 'N', 'NO']:
+    splice_download = False
+    if getall in ['n', 'no']:
         for i, j in enumerate(episodes, 1):
             print(i, name_parser(j))
-        episode_no = int(input("\nChoose episode number::: "))
-        download_url = get_download_url(episodes[episode_no - 1])
-        start = time.perf_counter()
-        download_episode(anime["name"], download_url)
-        end = time.perf_counter()
-        print(f'completed download in {end-start} minutes(s)')
-    elif getall in ['Yes', 'YES', 'y', 'Y']:
+        episode_no = input(
+            "\nYou can specify a range of anime to download in the format start:end\nChoose episode number::: ")
+        if len(episode_no.split(":")) == 1:
+            download_url = get_download_url(
+                episodes[int(episode_no.split(":")[0]) - 1])
+            start = time.perf_counter()
+            download_episode(anime["name"], download_url)
+            end = time.perf_counter()
+            print(f'completed download in {end-start} minutes(s)')
+        else:
+            start_ep, end_ep = [int(i) for i in episode_no.split(":")[:2]]
+            episodes = episodes[start_ep - 1:end_ep]
+            splice_download = True
+    if (getall in ['yes', 'y']) or splice_download:
         start = time.perf_counter()
         for i in episodes:
             download_url = get_download_url(i)

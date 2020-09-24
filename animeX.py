@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
     getall = input("\nDo you want to get all episodes?:: (Y/N)  ")
     if getall in ['n', 'No', 'N', 'NO']:
-        getsingle = input("\nDo you want to download more than one episode:: (Y/N)")
+        getsingle = input("\nDo you want to download more than one episode:: (Y/N) ")
         if getsingle in ['n', 'No', 'N', 'NO']:
             getlatest = input("Get latest episode: (Y/N) ")
             if getlatest in ['n', 'No', 'N', 'NO']:
@@ -161,16 +161,17 @@ if __name__ == "__main__":
                     print(i, j.split('-')[2])
                 except IndexError:
                     print(i, j.split('-')[1])
-            values = input("\nEnter a list of episode numbers separated by commas e.g: 20,21,22::  "))
+            values = input("\nEnter a list of episode numbers separated by commas e.g: 20,21,22::  ")
             values = values.split(',')
             if len(values) < 2:
                 print("\n Invalid data entry!: please make sure episodes are separated by commas ',' ")
-                print(("\n This is on you! "))      ## Pun
-                time.sleep(0.5)                     ## for effect
+                print(("\n This is on you! "))    ## Pun
+                time.sleep(1)                     ## for effect
+                print("\n =========== Good bye! ===============")
                 pass
                 exit()                              ## The joke
             for i in values:
-                download_url = get_download_url(episodes[i-1])
+                download_url = get_download_url(episodes[int(i)-1])
                 download_episode(anime["name"], download_url)
         else:
             print("Invalid entry!: Bye!")

@@ -1,6 +1,9 @@
-import requests, concurrent.futures, wget, os, sys, time
+import requests
+import wget
+import os
+import sys
+import time
 from bs4 import BeautifulSoup
-import threading
 
 
 def banner():
@@ -17,6 +20,10 @@ def banner():
 """
 
     return banner_ascii
+
+
+def name_parser(name):
+    return ("]".join(name.split("]")[1:2]) + "]").strip()
 
 
 def get_search_result(search_item):
@@ -96,7 +103,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 10
+    commit_count = 20
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
@@ -115,7 +122,12 @@ if __name__ == "__main__":
         anime_name = sys.argv[1]
     else:
         anime_name = input("\nWhat anime do you wanna download today::: ")
+
     search_result = get_search_result(anime_name)
+    if len(search_result) == 0:
+        print(
+            "We couldn't find the anime you searched for, check the spelling and try again")
+        exit()
 
     print("\nSearch results for", anime_name)
     for i, j in enumerate(search_result, 1):
@@ -127,71 +139,43 @@ if __name__ == "__main__":
         choice = int(input("\nWhich one? Enter the number of your choice::: "))
 
     anime = search_result[choice - 1]
-    anime["name"] = "".join([i if i.isalnum() else "-" for i in anime["name"]])
-    episodes = get_anime_episodes(anime["url"])
+    anime["name"] = "".join(
+        [i if i.isalnum() or i in [")", "(", " "] else "-" for i in anime["name"]])
 
-    getall = input("\nDo you want to get all episodes?:: (Y/N)  ")
-    if getall in ['n', 'No', 'N', 'NO']:
-        getsingle = input("\nDo you want to download more than one episode:: (Y/N) ")
-        if getsingle in ['n', 'No', 'N', 'NO']:
-            getlatest = input("Get latest episode: (Y/N) ")
-            if getlatest in ['n', 'No', 'N', 'NO']:
-                for i, j in enumerate(episodes, 1):
-                    try:
-                        print(i, j.split('-')[2])
-                    except IndexError:
-                        print(i, j.split('-')[1])
-                episode_no = int(input("\nChoose episode number:: "))
-                make_directory(anime["name"])
-                print("\nPress CTRL + C to cancel your download at any time")
-                download_url = get_download_url(episodes[episode_no-1])
-                start = time.perf_counter() 
+    episodes = get_anime_episodes(anime["url"])
+    getall = input(
+        "\nanimeX found {} episodes for the requested anime\nDo you want to get all episodes?::: (Y/N)  ".format(len(episodes))).lower()
+    make_directory(anime["name"])
+    print("\nPress CTRL + C to cancel your download at any time")
+
+    splice_download = False
+    if getall in ['n', 'no']:
+        for i, j in enumerate(episodes, 1):
+            print(i, name_parser(j))
+        episode_no = input(
+            "\nYou can specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
+        if len(episode_no.split(":")) == 1:
+            if len(episode_no.split(",")) == 1:
+                download_url = get_download_url(
+                    episodes[int(episode_no.split(":")[0]) - 1])
+                start = time.perf_counter()
                 download_episode(anime["name"], download_url)
                 end = time.perf_counter()
-                print(f'completed download in {end-start} minutes(s)')
-            elif getlatest in ['Yes', 'YES', 'y', 'Y']:
-                latest = episodes[-1]
-                download_url = get_download_url(latest)
-                download_episode(anime["name"], download_url)
+                print(f'\ncompleted download in {end-start} seconds')
             else:
-                print("Invalid entry!: Bye!")
-        elif getsingle in ['Yes', 'YES', 'y', 'Y']:
-            for i, j in enumerate(episodes, 1):
-                try:
-                    print(i, j.split('-')[2])
-                except IndexError:
-                    print(i, j.split('-')[1])
-            values = input("\nEnter a list of episode numbers separated by commas e.g: 20,21,22::  ")
-            values = values.split(',')
-            if len(values) < 2:
-                print("\n Invalid data entry!: please make sure episodes are separated by commas ',' ")
-                print(("\n This is on you! "))    ## Pun
-                time.sleep(1)                     ## for effect
-                print("\n =========== Good bye! ===============")
-                pass
-                exit()                              ## The joke
-            for i in values:
-                download_url = get_download_url(episodes[int(i)-1])
-                download_episode(anime["name"], download_url)
+                episode_list = [int(i) - 1 for i in episode_no.split(",")]
+                episodes = [j for i, j in enumerate(
+                    episodes) if i in episode_list]
+                splice_download = True
         else:
-            print("Invalid entry!: Bye!")
-    elif getall in ['Yes', 'YES', 'y', 'Y']:
-        make_directory(anime["name"])
-        print("\nPress CTRL + C to cancel your download at any time")
+            start_ep, end_ep = [int(i) for i in episode_no.split(":")[:2]]
+            episodes = episodes[start_ep - 1:end_ep]
+            splice_download = True
+    if (getall in ['yes', 'y']) or splice_download:
         start = time.perf_counter()
-    else:
-        print("Invalid entry!: Bye!")
-
-        """episodes = episodes[5:7]
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            for i in episodes:
-                download_url = get_download_url(i)
-                executor.submit(download_episode,anime["name"], download_url)"""
-
         for i in episodes:
             download_url = get_download_url(i)
             download_episode(anime["name"], download_url)
-
         end = time.perf_counter()
-        print(f'completed download in {end-start} minutes(s)')
+        print(f'\ncompleted download in {end-start} seconds')
     print("\nFinished downloading all episodes of", anime["name"])

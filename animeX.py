@@ -153,10 +153,10 @@ if __name__ == "__main__":
         for i, j in enumerate(episodes, 1):
             print(i, name_parser(j))
         try:
-            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other Options\nChoose an option :::   "))
+            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other download Options\nChoose an option :::   "))
         except ValueError:
             print("Invalid Entry, enter in '1' or '2'")
-            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other Options\nChoose an option :::  "))
+            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other download Options\nChoose an option :::  "))
         if options == 1:
             print(" Aye aye captain, downloading latest episode, hit CTRL + C to cancel anytime")
             latest = episodes[-1]

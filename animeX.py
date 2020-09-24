@@ -152,25 +152,39 @@ if __name__ == "__main__":
     if getall in ['n', 'no']:
         for i, j in enumerate(episodes, 1):
             print(i, name_parser(j))
-        episode_no = input(
-            "\nYou can specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
-        if len(episode_no.split(":")) == 1:
-            if len(episode_no.split(",")) == 1:
-                download_url = get_download_url(
-                    episodes[int(episode_no.split(":")[0]) - 1])
-                start = time.perf_counter()
-                download_episode(anime["name"], download_url)
-                end = time.perf_counter()
-                print(f'\ncompleted download in {end-start} seconds')
+        try:
+            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other download Options\nChoose an option :::   "))
+        except ValueError:
+            print("Invalid Entry, enter in '1' or '2'")
+            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other download Options\nChoose an option :::  "))
+        if options == 1:
+            print(" Aye aye captain, downloading latest episode, hit CTRL + C to cancel anytime")
+            latest = episodes[-1]
+            download_url = get_download_url(latest)
+            download_episode(anime["name"], download_url)
+        elif options == 2:
+            episode_no = input(
+                "\nYou can specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
+            if len(episode_no.split(":")) == 1:
+                if len(episode_no.split(",")) == 1:
+                    download_url = get_download_url(
+                        episodes[int(episode_no.split(":")[0]) - 1])
+                    start = time.perf_counter()
+                    download_episode(anime["name"], download_url)
+                    end = time.perf_counter()
+                    print(f'\ncompleted download in {end-start} seconds')
+                else:
+                    episode_list = [int(i) - 1 for i in episode_no.split(",")]
+                    episodes = [j for i, j in enumerate(
+                        episodes) if i in episode_list]
+                    splice_download = True
             else:
-                episode_list = [int(i) - 1 for i in episode_no.split(",")]
-                episodes = [j for i, j in enumerate(
-                    episodes) if i in episode_list]
+                start_ep, end_ep = [int(i) for i in episode_no.split(":")[:2]]
+                episodes = episodes[start_ep - 1:end_ep]
                 splice_download = True
         else:
-            start_ep, end_ep = [int(i) for i in episode_no.split(":")[:2]]
-            episodes = episodes[start_ep - 1:end_ep]
-            splice_download = True
+            print("Invalid Entry, enter in '1' or '2'")
+            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other Options\nChoose an option ::: "))
     if (getall in ['yes', 'y']) or splice_download:
         start = time.perf_counter()
         for i in episodes:

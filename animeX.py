@@ -103,7 +103,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 28
+    commit_count = 29
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
@@ -130,8 +130,8 @@ if __name__ == "__main__":
         exit()
 
     print("\nSearch results for", anime_name)
-    for i, j in enumerate(search_result, 1):
-        print(i, " - " + j["name"])
+    for i, j in enumerate(search_result):
+        print(i + 1, " - " + j["name"])
     try:
         choice = int(
             input("\nWhich one? Enter the number of your choice ::: "))
@@ -152,8 +152,8 @@ if __name__ == "__main__":
 
     splice_download = False
     if getall in ['n', 'no']:
-        for i, j in enumerate(episodes, 1):
-            print(i, name_parser(j))
+        for i, j in enumerate(episodes):
+            print(i + 1, name_parser(j))
         try:
             options = int(input(
                 "\nWhat kind of action would you like to perform: \n1) Get latest episode \n2) See other download Options\nChoose an option ::: "))

@@ -80,3 +80,5 @@ Encounter any problem(s)? feel free to open an issue. If you feel you could make
 ## 🤓 Developer(s)
 * **LordGhostX**
 * **Mastersam07**
+* **Curiouspaul1**
+* **bolubee101**

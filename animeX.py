@@ -83,7 +83,7 @@ def download_episode(anime_name, download_url):
     filename = os.path.basename(download_url)
     download_path = os.path.join(anime_name, filename)
     if not os.path.exists(download_path):
-        print("\nDownloading", filename)
+        print("\nDownloading", name_parser(filename))
         wget.download(download_url, download_path)
         clear_tmp(anime_name)
 
@@ -103,7 +103,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 20
+    commit_count = 29
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         anime_name = sys.argv[1]
     else:
-        anime_name = input("\nWhat anime do you wanna download today::: ")
+        anime_name = input("\nWhat anime do you wanna download today ::: ")
 
     search_result = get_search_result(anime_name)
     if len(search_result) == 0:
@@ -130,13 +130,15 @@ if __name__ == "__main__":
         exit()
 
     print("\nSearch results for", anime_name)
-    for i, j in enumerate(search_result, 1):
-        print(i, " - " + j["name"])
+    for i, j in enumerate(search_result):
+        print(i + 1, " - " + j["name"])
     try:
-        choice = int(input("\nWhich one? Enter the number of your choice::: "))
+        choice = int(
+            input("\nWhich one? Enter the number of your choice ::: "))
     except ValueError:
         print("Invalid Entry! please enter a number that corresponds to an option listed.")
-        choice = int(input("\nWhich one? Enter the number of your choice::: "))
+        choice = int(
+            input("\nWhich one? Enter the number of your choice ::: "))
 
     anime = search_result[choice - 1]
     anime["name"] = "".join(
@@ -144,27 +146,29 @@ if __name__ == "__main__":
 
     episodes = get_anime_episodes(anime["url"])
     getall = input(
-        "\nanimeX found {} episodes for the requested anime\nDo you want to get all episodes?::: (Y/N)  ".format(len(episodes))).lower()
+        "\nanimeX found {} episodes for the requested anime\nDo you want to get all episodes? ::: (Y/N) ".format(len(episodes))).lower()
     make_directory(anime["name"])
     print("\nPress CTRL + C to cancel your download at any time")
 
     splice_download = False
     if getall in ['n', 'no']:
         try:
-            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other download Options\nChoose an option :::   "))
+            options = int(input(
+                "\nWhat kind of action would you like to perform: \n1) Get latest episode \n2) See other download Options\nChoose an option ::: "))
         except ValueError:
             print("Invalid Entry, enter in '1' or '2'")
-            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other download Options\nChoose an option :::  "))
+            options = int(input(
+                "\nWhat kind of action would you like to perform: \n1) Get latest episode \n2) See other download Options\nChoose an option ::: "))
         if options == 1:
-            print(" Aye aye captain, downloading latest episode, hit CTRL + C to cancel anytime")
+            print(
+                "Aye aye captain, downloading latest episode, hit CTRL + C to cancel anytime")
             latest = episodes[-1]
             download_url = get_download_url(latest)
             download_episode(anime["name"], download_url)
         elif options == 2:
             for i, j in enumerate(episodes, 1):
                 print(i, name_parser(j))
-            episode_no = input(
-                "\nYou can choose an episode from the list above or specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
+            episode_no = input("\nYou can choose an episode from the list above or specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
             if len(episode_no.split(":")) == 1:
                 if len(episode_no.split(",")) == 1:
                     download_url = get_download_url(
@@ -172,7 +176,7 @@ if __name__ == "__main__":
                     start = time.perf_counter()
                     download_episode(anime["name"], download_url)
                     end = time.perf_counter()
-                    print(f'\ncompleted download in {end-start} seconds')
+                    print(f'\ncompleted download in {int(end-start)} seconds')
                 else:
                     episode_list = [int(i) - 1 for i in episode_no.split(",")]
                     episodes = [j for i, j in enumerate(
@@ -184,12 +188,13 @@ if __name__ == "__main__":
                 splice_download = True
         else:
             print("Invalid Entry, enter in '1' or '2'")
-            options = int(input("\n What kind of action would you like to perform: \n 1) Get latest episode \n 2) See other Options\nChoose an option ::: "))
+            options = int(input(
+                "\nWhat kind of action would you like to perform:\n1) Get latest episode\n2) See other Options\nChoose an option ::: "))
     if (getall in ['yes', 'y']) or splice_download:
         start = time.perf_counter()
         for i in episodes:
             download_url = get_download_url(i)
             download_episode(anime["name"], download_url)
         end = time.perf_counter()
-        print(f'\ncompleted download in {end-start} seconds')
+        print(f'\ncompleted download in {int(end-start)} seconds')
     print("\nFinished downloading all episodes of", anime["name"])

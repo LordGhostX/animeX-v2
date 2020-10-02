@@ -103,7 +103,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 29
+    commit_count = 34
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits").json())
     if commit_count != repo_commit_count:
@@ -168,7 +168,8 @@ if __name__ == "__main__":
         elif options == 2:
             for i, j in enumerate(episodes, 1):
                 print(i, name_parser(j))
-            episode_no = input("\nYou can choose an episode from the list above or specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
+            episode_no = input(
+                "\nYou can choose an episode from the list above or specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
             if len(episode_no.split(":")) == 1:
                 if len(episode_no.split(",")) == 1:
                     download_url = get_download_url(

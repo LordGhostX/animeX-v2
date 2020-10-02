@@ -11,20 +11,8 @@ All anime are gotten from [animeout.xyz](https://animeout.xyz)
 <img src="ss/1a.png" alt="Home page">
 <img src="ss/2a.png" alt="Usage page">
 
-## Notes
-* Advisable to check the source website for the anime because it'll download all the episodes on the site (720p and 1080p if it's available on the site)
-* The website isn't exactly organized so some anime may fail while trying to download. Make a PR when that occurs
-* This website isn't regularly updated with the latest anime please use [animepahe.com](https://animepahe.com) instead
-* Share with your friends
-
 ## Supported Websites
 * [animeout.xyz](https://animeout.xyz)
-
-## Download
-Download the windows release version here
-<br>
-<a href="./dist/animeX.exe">Windows EXE</a>
-<br>
 
 ## 💻 Requirements
 * Any Operating System (ie. MacOS X, Linux, Windows)
@@ -59,13 +47,6 @@ $ python animeX.py
 $ python animeX.py "black bullet"
 ```
 
-#### 5. Generating windows executable
-> Ensure to specify the project and icon path in the spec file(animeX.spec)
-```sh
-$ pyinstaller.exe animeX.spec
-```
-The executable is created in the directory project_path\dist\animeX.exe
-
 ![app screenshot](ss/home.png)
 
 ## :heart: Found this project useful?
@@ -77,7 +58,7 @@ Encounter any problem(s)? feel free to open an issue. If you feel you could make
 ## ⭐️ License
 <a href="https://github.com/LordGhostX/animeX-v2/blob/master/license.txt">MIT LICENSE</a>
 
-## 🤓 Developer(s)
+## 🤓 Contributors
 * **LordGhostX**
 * **Mastersam07**
 * **Curiouspaul1**

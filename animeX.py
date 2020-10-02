@@ -152,8 +152,6 @@ if __name__ == "__main__":
 
     splice_download = False
     if getall in ['n', 'no']:
-        for i, j in enumerate(episodes):
-            print(i + 1, name_parser(j))
         try:
             options = int(input(
                 "\nWhat kind of action would you like to perform: \n1) Get latest episode \n2) See other download Options\nChoose an option ::: "))
@@ -168,8 +166,9 @@ if __name__ == "__main__":
             download_url = get_download_url(latest)
             download_episode(anime["name"], download_url)
         elif options == 2:
-            episode_no = input(
-                "\nYou can specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number ::: ")
+            for i, j in enumerate(episodes, 1):
+                print(i, name_parser(j))
+            episode_no = input("\nYou can choose an episode from the list above or specify a range of anime to download in the format start:end e.g 10:20 or a list seperated by comma e.g 1,5,7,10\nChoose episode number::: ")
             if len(episode_no.split(":")) == 1:
                 if len(episode_no.split(",")) == 1:
                     download_url = get_download_url(

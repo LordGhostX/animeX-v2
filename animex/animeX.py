@@ -1,8 +1,9 @@
-import requests
-import wget
 import os
 import sys
 import time
+
+import requests
+import wget
 from bs4 import BeautifulSoup
 
 
@@ -112,8 +113,8 @@ def check_update():
     else:
         print("\nYou're ready to go :)")
 
-
-if __name__ == "__main__":
+# Entry point
+def run_animeX():
     print(banner())
     print("\nAll anime are gotten from www.animeout.xyz/")
     check_update()

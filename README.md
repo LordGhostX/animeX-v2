@@ -3,7 +3,7 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/LordGhostX/animeX-v2?color=success&style=flat-square)](https://github.com/LordGhostX/animeX-v2/graphs/contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-success.svg?style=flat-square)](https://github.com/LordGhostX/animeX-v2/pulls)
 
-Version 2 of [animeX](https://github.com/LordGhostX/animeX) which is a CLI tool for downloading anime.
+Version 2 of [animeX](https://github.com/LordGhostX/animeX) which is a CLI tool for downloading anime. You can also checkout [AnimeHive](https://t.me/animehive_bot) which is a telegram adaptation of the script.
 
 All anime are gotten from [animeout.xyz](https://animeout.xyz)
 

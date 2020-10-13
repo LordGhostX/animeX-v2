@@ -22,7 +22,7 @@ def banner():
     return banner_ascii
 
 
-def parse_anime_name(name):
+def name_parser(name):
     new_name = ("]".join(name.split("]")[1:2]) + "]").strip()
     if new_name in ["[RapidBot]", "[]"]:
         new_name = os.path.basename(name)
@@ -106,7 +106,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 37
+    commit_count = 39
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits?per_page=100").json())
     if commit_count != repo_commit_count:

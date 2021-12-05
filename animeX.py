@@ -22,6 +22,11 @@ def banner():
     return banner_ascii
 
 
+class BadLinkException(Exception):
+    def __init__(self, ok):
+        self.ok = ok
+
+
 def name_parser(name):
     new_name = ("]".join(name.split("]")[1:2]) + "]").strip()
     if new_name in ["[RapidBot]", "[]"]:
@@ -52,7 +57,7 @@ def get_search_result(search_item):
         post_title = post['title']['rendered']
 
         #condition for a more relevant result. as per WP API response can be ambiguous 
-        if search_item.lower() in post_title.lower(): 
+        if search_item.split(' ', 1)[0].lower() in post_title.lower(): 
             print(post_title)
             search_result.append({
                 'name': post_title,
@@ -96,32 +101,53 @@ def get_download_url(anime_url):
     except:
         download_url = download_page.find(
             "script", {"src": None}).contents[0].split('"')[1]
+    
     return download_url
 
 
-def download_episode(anime_name, download_url):
+def download_episode(anime_name, download_url, i=1):
+    #using urllib3 rather wget as wget seems quite redundant for mkv file download
+    http = urllib3.PoolManager()
+    #prevent eyesoring error printout
+    urllib3.disable_warnings()
+
     # download anime and store in the folder the same name
     # don't download files that exist and clear tmp files after download
     filename = os.path.basename(download_url)
     download_path = os.path.join(anime_name, filename)
     if not os.path.exists(download_path):
-        print("\nDownloading", name_parser(filename))
-        download_url = download_url.replace(" ", "%20")
-        print(download_url)
 
-        #using urllib3 rather wget as wget seems quite redundant for mkv file download
-        http = urllib3.PoolManager()
-        r = http.request('GET', download_url, preload_content=False)
+        # Due to the existence of multiple streams of download
+        # we prepare a download url with i as subdomain index variant
+        _url = download_url.replace(" ", "%20")
+        _url= "https://pub"+ str(i) +".animeout.com" + _url[_url.find('/series'):]
+        print("\nTrying " + _url + " ...")
+                
+        try:
+            #send a download request with current url
+            r = http.request('GET', _url, preload_content=False)
 
-        with open(filename, 'wb') as out:
-            while True:
-                data = r.read()
-                if not data:
-                    break
-                out.write(data)
+            if r.status == 404:
+                raise BadLinkException('bad link')
+            
+            print('Gotten Verified Download link!')
+            print("Downloading", name_parser(filename))
 
-        r.release_conn()
-        clear_tmp(anime_name)
+            #download if response of download url request is ok
+            with open(filename, 'wb') as out:
+                while True:
+                    data = r.read()
+                    if not data:
+                        break
+                    out.write(data)
+
+            r.release_conn()
+            clear_tmp(anime_name)
+        except BadLinkException as e:
+            print(e)
+            n = i + 1
+            download_episode(anime_name, download_url, n)
+
 
 
 def make_directory(anime_name):

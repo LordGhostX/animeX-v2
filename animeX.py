@@ -1,5 +1,5 @@
 import requests
-import wget
+import urllib3
 import os
 import sys
 import time
@@ -30,27 +30,44 @@ def name_parser(name):
 
 
 def get_search_result(search_item):
-    # search for a given anime
-    search_url = "https://www.animeout.xyz/"
-    params = {
-        "s": search_item
-    }
-    r = requests.get(search_url, params=params)
-    search_result_html = BeautifulSoup(r.text, "html.parser")
+    # search for a given anime using WP Rest API since cloudflare recaptcha can be a hassle
+    search_url = "https://www.animeout.xyz/wp-json/wp/v2/posts"
 
+    #set to firefox client
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    
+    #search parameter
+    params = {
+        "search" : search_item
+    }
+
+    #array of contexts searched from api
     search_result = []
-    for i in search_result_html.findAll("h3", {"class": "post-title"}):
-        search_result.append({
-            "name": i.text,
-            "url": i.find("a")["href"]
-        })
+
+    r = requests.get(search_url, params=params, headers=headers).json()
+    
+    # loop through (& functions)  each post found in json
+    for post in r:
+
+        post_title = post['title']['rendered']
+
+        #condition for a more relevant result. as per WP API response can be ambiguous 
+        if search_item.lower() in post_title.lower(): 
+            print(post_title)
+            search_result.append({
+                'name': post_title,
+                'raw-content': post['content']['rendered']
+            })
+
     return search_result
 
 
-def get_anime_episodes(anime_url):
+def get_anime_episodes(anime_content):
     # get the episodes in the anime by parsing all links that are videos
-    r = requests.get(anime_url)
-    anime_result = BeautifulSoup(r.text, "html.parser")
+    #r = requests.get(anime_url)
+
+    #parse the anime content to html
+    anime_result = BeautifulSoup(anime_content, "html.parser")
 
     episodes = []
     for i in anime_result.findAll("a"):
@@ -66,10 +83,12 @@ def get_download_url(anime_url):
     # get the video download URL
     r = requests.get(anime_url)
     pre_download_page = BeautifulSoup(r.text, "html.parser")
+
     pre_download_url = pre_download_page.find("a", {"class": "btn"})["href"]
 
     r = requests.get(pre_download_url)
     download_page = BeautifulSoup(r.text, "html.parser")
+    
     # using a try catch because .text returned empty on some OS
     try:
         download_url = download_page.find(
@@ -87,7 +106,21 @@ def download_episode(anime_name, download_url):
     download_path = os.path.join(anime_name, filename)
     if not os.path.exists(download_path):
         print("\nDownloading", name_parser(filename))
-        wget.download(download_url, download_path)
+        download_url = download_url.replace(" ", "%20")
+        print(download_url)
+
+        #using urllib3 rather wget as wget seems quite redundant for mkv file download
+        http = urllib3.PoolManager()
+        r = http.request('GET', download_url, preload_content=False)
+
+        with open(filename, 'wb') as out:
+            while True:
+                data = r.read()
+                if not data:
+                    break
+                out.write(data)
+
+        r.release_conn()
         clear_tmp(anime_name)
 
 
@@ -147,7 +180,8 @@ if __name__ == "__main__":
     anime["name"] = "".join(
         [i if i.isalnum() or i in [")", "(", " "] else "-" for i in anime["name"]])
 
-    episodes = get_anime_episodes(anime["url"])
+    #using the raw anime content rather than url since it contains all that is needed
+    episodes = get_anime_episodes(anime["raw-content"])
     getall = input(
         "\nanimeX found {} episodes for the requested anime\nDo you want to get all episodes? ::: (Y/N) ".format(len(episodes))).lower()
     make_directory(anime["name"])

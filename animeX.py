@@ -1,8 +1,8 @@
-import requests
-import urllib3
 import os
 import sys
 import time
+import urllib3
+import requests
 from bs4 import BeautifulSoup
 
 
@@ -38,26 +38,24 @@ def get_search_result(search_item):
     # search for a given anime using WP Rest API since cloudflare recaptcha can be a hassle
     search_url = "https://www.animeout.xyz/wp-json/wp/v2/posts"
 
-    #set to firefox client
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-    
-    #search parameter
+    # set to firefox client
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
+    # search parameter
     params = {
-        "search" : search_item
+        "search": search_item
     }
 
-    #array of contexts searched from api
+    # array of contexts searched from api
     search_result = []
-
     r = requests.get(search_url, params=params, headers=headers).json()
-    
+
     # loop through (& functions)  each post found in json
     for post in r:
-
         post_title = post['title']['rendered']
-
-        #condition for a more relevant result. as per WP API response can be ambiguous 
-        if search_item.split(' ', 1)[0].lower() in post_title.lower(): 
+        # condition for a more relevant result. as per WP API response can be ambiguous
+        if search_item.split(' ', 1)[0].lower() in post_title.lower():
             print(post_title)
             search_result.append({
                 'name': post_title,
@@ -68,10 +66,7 @@ def get_search_result(search_item):
 
 
 def get_anime_episodes(anime_content):
-    # get the episodes in the anime by parsing all links that are videos
-    #r = requests.get(anime_url)
-
-    #parse the anime content to html
+    # parse the anime content to html
     anime_result = BeautifulSoup(anime_content, "html.parser")
 
     episodes = []
@@ -93,7 +88,7 @@ def get_download_url(anime_url):
 
     r = requests.get(pre_download_url)
     download_page = BeautifulSoup(r.text, "html.parser")
-    
+
     # using a try catch because .text returned empty on some OS
     try:
         download_url = download_page.find(
@@ -101,14 +96,15 @@ def get_download_url(anime_url):
     except:
         download_url = download_page.find(
             "script", {"src": None}).contents[0].split('"')[1]
-    
+
     return download_url
 
 
 def download_episode(anime_name, download_url, i=1):
-    #using urllib3 rather wget as wget seems quite redundant for mkv file download
+    # using urllib3 rather wget as wget seems quite redundant for mkv file download
     http = urllib3.PoolManager()
-    #prevent eyesoring error printout
+
+    # prevent eyesoring error printout
     urllib3.disable_warnings()
 
     # download anime and store in the folder the same name
@@ -116,25 +112,25 @@ def download_episode(anime_name, download_url, i=1):
     filename = os.path.basename(download_url)
     download_path = os.path.join(anime_name, filename)
     if not os.path.exists(download_path):
-
         # Due to the existence of multiple streams of download
         # we prepare a download url with i as subdomain index variant
         _url = download_url.replace(" ", "%20")
-        _url= "https://pub"+ str(i) +".animeout.com" + _url[_url.find('/series'):]
+        _url = "https://pub" + str(i) + ".animeout.com" + \
+            _url[_url.find('/series'):]
         print("\nTrying " + _url + " ...")
-                
+
         try:
-            #send a download request with current url
+            # send a download request with current url
             r = http.request('GET', _url, preload_content=False)
 
             if r.status == 404:
                 raise BadLinkException('bad link')
-            
+
             print('Gotten Verified Download link!')
             print("Downloading", name_parser(filename))
 
-            #download if response of download url request is ok
-            with open(filename, 'wb') as out:
+            # download if response of download url request is ok
+            with open(download_path, 'wb') as out:
                 while True:
                     data = r.read()
                     if not data:
@@ -147,7 +143,6 @@ def download_episode(anime_name, download_url, i=1):
             print(e)
             n = i + 1
             download_episode(anime_name, download_url, n)
-
 
 
 def make_directory(anime_name):
@@ -165,14 +160,14 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 39
+    commit_count = 44
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits?per_page=100").json())
     if commit_count != repo_commit_count:
         print("\nYou are using an outdated version of animeX. Please update from "
-              "https://github.com/LordGhostX/animeX-v2")
+              "https://github.com/LordGhostX/animeX-v2\n")
     else:
-        print("\nYou're ready to go :)")
+        print("\nYou're ready to go :)\n")
 
 
 if __name__ == "__main__":
@@ -206,7 +201,7 @@ if __name__ == "__main__":
     anime["name"] = "".join(
         [i if i.isalnum() or i in [")", "(", " "] else "-" for i in anime["name"]])
 
-    #using the raw anime content rather than url since it contains all that is needed
+    # using the raw anime content rather than url since it contains all that is needed
     episodes = get_anime_episodes(anime["raw-content"])
     getall = input(
         "\nanimeX found {} episodes for the requested anime\nDo you want to get all episodes? ::: (Y/N) ".format(len(episodes))).lower()
@@ -254,7 +249,7 @@ if __name__ == "__main__":
             print("Invalid Entry, enter in '1' or '2'")
             options = int(input(
                 "\nWhat kind of action would you like to perform:\n1) Get latest episode\n2) See other Options\nChoose an option ::: "))
-    if (getall in ['yes', 'y']) or splice_download:
+    if getall in ['yes', 'y'] or splice_download:
         start = time.perf_counter()
         for i in episodes:
             download_url = get_download_url(i)

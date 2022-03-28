@@ -160,7 +160,7 @@ def clear_tmp(directory):
 
 def check_update():
     # check if there's a higher version of the app
-    commit_count = 44
+    commit_count = 48
     repo_commit_count = len(requests.get(
         "https://api.github.com/repos/LordGhostX/animeX-v2/commits?per_page=100").json())
     if commit_count != repo_commit_count:

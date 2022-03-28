@@ -169,6 +169,29 @@ def check_update():
     else:
         print("\nYou're ready to go :)\n")
 
+def get_user_choice(cap):
+    LIST_OF_ALLOWED_DIGITS = [d for d in "0123456789"]
+    choice = input("\nWhich one? Enter the number of your choice ::: ")
+
+    # ensure choice is not empty
+    if len(choice) == 0:
+        return get_user_choice(cap)
+
+    # separate each digit of the choice string
+    digits = [c for c in choice]
+
+    # look for any element that isn't a digit
+    for digit in digits:
+        if digit not in LIST_OF_ALLOWED_DIGITS:
+            print("Your input is invalid! pick another number")
+            return get_user_choice(cap)
+    
+    if int(choice) > cap or int(choice) == 0:
+        print("Your input is invalid! pick another number")
+        return get_user_choice(cap)
+    
+    return abs(int(
+        choice))
 
 if __name__ == "__main__":
     print(banner())
@@ -189,13 +212,8 @@ if __name__ == "__main__":
     print("\nSearch results for", anime_name)
     for i, j in enumerate(search_result):
         print(i + 1, " - " + j["name"])
-    try:
-        choice = int(
-            input("\nWhich one? Enter the number of your choice ::: "))
-    except ValueError:
-        print("Invalid Entry! please enter a number that corresponds to an option listed.")
-        choice = int(
-            input("\nWhich one? Enter the number of your choice ::: "))
+    
+    choice = get_user_choice( len(search_result) )
 
     anime = search_result[choice - 1]
     anime["name"] = "".join(

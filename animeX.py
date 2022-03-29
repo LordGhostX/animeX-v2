@@ -130,12 +130,24 @@ def download_episode(anime_name, download_url, i=1):
             print("Downloading", name_parser(filename))
 
             # download if response of download url request is ok
-            with open(download_path, 'wb') as out:
+            with open(download_path, 'ab') as out:
+                # get the size of the file
+                length = int(r.getheader('content-length'))
+                size = 0
+                blocksize = 1048576
+                print(length)
+
+                print('0% - {} / {} MB'.format(size // blocksize, length // blocksize), end='\r')
+
                 while True:
-                    data = r.read()
+                    # read a megabite of data
+                    data = r.read(blocksize)
                     if not data:
                         break
                     out.write(data)
+                    size += len(data)
+
+                    print('\r{:.2f}% - {} / {} MB'.format((size/length) * 100, size // blocksize, length // blocksize), end='\r')
 
             r.release_conn()
             clear_tmp(anime_name)
